@@ -1,0 +1,50 @@
+name: CD Pipeline
+on:
+  push:
+    branches:
+      - staging
+  workflow_dispatch: {}
+  release:
+    types: published
+
+env:
+  PORT: 5001
+  IMAGE: ${{ vars.IMAGE }}:${{ github.sha }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Setup, test, and build project
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test application
+        run: npm test
+
+  build-and-deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    name: Setup project, authorize GitHub Actions to AWS, and deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Authenticate for Docker Hub
+        id: docker-auth
+        env:
+          D_USER: ${{ secrets.DOCKER_USER }}
+          D_PASS: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $D_USER -p $D_PASS
+
+      - name: Build and tag Image
+        run: |
+          docker build -t ${{ env.IMAGE }} .
+
+      - name: Push the image to Docker Hub
+        run: |
+          docker push ${{ env.IMAGE }}
