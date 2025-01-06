@@ -43,8 +43,8 @@ jobs:
 
       - name: Build and tag Image
         run: |
-          docker build -t ${{ env.IMAGE }} .
+          docker build -t chintanboghara/ci-cd .
 
       - name: Push the image to Docker Hub
         run: |
-          docker push ${{ env.IMAGE }}
+          docker push chintanboghara/ci-cd
