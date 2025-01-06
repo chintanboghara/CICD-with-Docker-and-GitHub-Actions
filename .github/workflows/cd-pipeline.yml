@@ -47,4 +47,4 @@ jobs:
 
       - name: Push the image to Docker Hub
         run: |
-          docker push chintanboghara/ci-cd: latest
+          docker push chintanboghara/ci-cd:latest
