@@ -43,8 +43,8 @@ jobs:
 
       - name: Build and tag Image
         run: |
-          docker build -t chintanboghara/ci-cd .
+          docker build -t chintanboghara/ci-cd:latest .
 
       - name: Push the image to Docker Hub
         run: |
-          docker push chintanboghara/ci-cd
+          docker push chintanboghara/ci-cd: latest
